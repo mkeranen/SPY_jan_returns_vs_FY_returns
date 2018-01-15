@@ -12,7 +12,7 @@ from matplotlib import style
 style.use('ggplot')
 
 #Read stock data into dataframe from .csv and use date as index
-df = pd.read_csv('SPY_10yr_daily_data.csv')
+df = pd.read_csv('SPY_historical_data_1993_2018.csv')
 df['Date'] = pd.to_datetime(df['Date'])
 df = df.set_index(['Date'])
 
