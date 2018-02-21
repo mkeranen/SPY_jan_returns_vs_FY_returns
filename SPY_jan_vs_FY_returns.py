@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Spyder Editor
+Created on Mon Jan 15 16:22:31 2018
 
-This script compares January SPY returns to FY returns.
+@author: mkeranen
 """
 
 import pandas as pd
 from matplotlib import pyplot as plt
 from matplotlib import style
+import seaborn as sns
 
 style.use('ggplot')
 
@@ -16,7 +17,7 @@ df = pd.read_csv('SPY_historical_data_1993_2018.csv')
 df['Date'] = pd.to_datetime(df['Date'])
 df = df.set_index(['Date'])
 
-starting_year = 2008
+starting_year = 1993
 ending_year = 2019
 
 #Initialize dict for storing SPY returns information
@@ -64,7 +65,7 @@ if __name__ == "__main__":
         #print('Year: {}, January Return: {:.2%}, FY Return: {:.2%}'.format(year,jan_returns,FY_returns))
         plt.scatter(*returns[str(year)])
         plt.annotate(str(year),(100*jan_returns,100*FY_returns))
-        
+    
     
     #Format plot
     plt.axhline(color='grey', linewidth=0.5)
@@ -75,3 +76,14 @@ if __name__ == "__main__":
     plt.tight_layout()
     plt.savefig('SPY_Jan_Returns_vs_FY_Returns.pdf')
     plt.show()
+    
+    #Create dataframe with Jan and FY returns for regression analysis
+    df_rets = pd.DataFrame(returns)
+    df_rets = df_rets.T
+    df_rets.columns = ['Jan_Returns','FY_Returns']
+    
+    #Regression Joint-plot with regression line, pearson r value, confidence interval
+    reg_plot = sns.jointplot("Jan_Returns", "FY_Returns", data=df_rets, kind="reg", color='b')
+    ax = plt.gca()
+    ax.set_title('January SPY Returns vs. Full Year Returns', y=1.22)
+    reg_plot.savefig('Linear Regression Result.pdf')
